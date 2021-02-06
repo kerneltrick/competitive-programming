@@ -34,8 +34,7 @@ int main(){
 			q++;
 		}
 
-		//First word in query is event type
-		
+		//First word in query is event type	
 		int arg1 = stoi(query[1]);
 		if (query[2].empty()){
 			if(query[0] == "PRINT"){ //Print item
