@@ -18,6 +18,17 @@ int is_white_tile(int sideLength, int x, int y){
 	return true;
 }
 
+bool on_diagonal(int sideLength, int x, int y, int dx, int dy){
+	x = x % sideLength;
+	y = y % sideLength;
+	dx = dx % sideLength;
+	dy = dy % sideLength;
+	if(x == y and dx == dy)
+		return true;
+	return false;
+
+}
+
 int main(){
 	
 	int sideLength=0;
@@ -43,7 +54,7 @@ int main(){
 			//Check if flea can only land on black squares
 			//If the flea ever lands on at the same mod coordinate pair as it started on,
 			//we know the flea is in a never ending loop
-			if(jumps!=0 and x%sideLength == start_x and y%sideLength == start_y){
+			if((jumps!=0 and x%sideLength == start_x and y%sideLength == start_y) or (on_diagonal(sideLength, x, y, dx, dy))){
 				cout << "The flea cannot escape from black squares.\n";
 				break;
 			}
