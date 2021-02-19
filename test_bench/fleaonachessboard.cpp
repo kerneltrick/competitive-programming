@@ -21,10 +21,6 @@ int is_white_tile(int sideLength, int x, int y){
 bool cannot_escape(int sideLength, int x, int y, int dx, int dy){
 	if (is_white_tile(sideLength, x, y))
 		return false;
-	if (dx == 1 && sideLength != 1)
-		return false;
-	if (dy == 1 && sideLength != 1)
-		return false;
 	if (dx % sideLength != 0 && sideLength % dx != 0)
 		return false;
 	if (dy % sideLength != 0 && sideLength % dy != 0)
@@ -41,7 +37,7 @@ int main(){
 	int dy=0;
 
 	cin >> sideLength >> x >> y >> dx >> dy;
-	while(sideLength != 0 || x != 0 || y!=0 || dx != 0 || dy!= 0 ){
+	while((sideLength + x + y + dx  + dy) != 0 ){
 		if(cannot_escape(sideLength, x, y, dx, dy))
 			cout << "The flea cannot escape from black squares.\n";
 		else{
