@@ -1,11 +1,30 @@
 #include <stdio.h>
 #include <math.h>
 #include <climits>
-#define INF INT_MAX
+#include <tuple>
+#include <vector>
+#define INF 100000000 
+typedef std::tuple<int, int, int> triplet;
 
-int bellman_ford(){
+int bellman_ford(std::vector<triplet> edgeList, int distance[], int n, int origin, int target){
+	distance[origin] = 0;
 
-	return 0;
+	for(int i = 0; i < n-1; ++i){
+		for (auto e: edgeList){
+			int a, b, w;
+			std::tie(a, b, w) = e;
+			distance[b] = std::min(distance[b], distance[a] + w);	
+		}	
+	}
+	
+	for (auto e: edgeList){
+		int a, b, w;
+		std::tie(a,b,w) = e;
+		if(distance[b] > (distance[a] + w ))
+			return -1;
+	}
+
+	return distance[target];
 }
 
 int main(){
@@ -15,20 +34,37 @@ int main(){
 	scanf("%d %d %d", &n, &m, &numQueries);
 	while((n + m + numQueries) != 0){
 
-		std::vector<int> edgeList;
-		scanf("%d %d %d", &n, &m, &numQueries);
+		std::vector<triplet> edgeList;
 		for(int i = 0; i < m; ++i){
-			std::tuple<int, int, int> edge;
+			triplet edge;
 			int a, b, w;
-			scanf("%d %d %d", &a, &b, &c);
-			edgeList.push({a,b,w});
+			scanf("%d %d %d", &a, &b, &w);
+			edgeList.push_back({a,b,w});
 		}
-		int a=0;
-		int b=0;
+
+			
+		int origin=0;
+		int target=0;
+		int dist=0;
+		int distance[n]; 
+		for (int i = 0; i < n; ++i)
+			distance[i] = INF;
+
 		for(int i = 0; i < numQueries; ++i){
-			scanf("%d %d", &a, &b );
+			scanf("%d %d", &origin, &target );
+			dist = bellman_ford(edgeList, distance, n, origin, target);
+			if(dist == INF)
+				printf("Impossible\n");
+			else if(dist == -1)
+				printf("-Infinity\n");
+			else
+				printf("%d\n", dist);
+			
 		}	
+		printf("\n");
+		scanf("%d %d %d", &n, &m, &numQueries);
 	}
+	return 0;
 
 
 }
