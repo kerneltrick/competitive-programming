@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 #define INF 100000000 
-typedef std::pair<int, int> triplet;
+typedef std::tuple<int, int, int> triplet;
 typedef std::pair<int, int> PI;
 
 int bellman_ford(std::vector<triplet> edgeList, int n, int origin, int target){
@@ -69,14 +69,12 @@ int main(){
 	while((n + m + numQueries) != 0){
 
 		int *adj [n];
-		std::vector<triplet> edgeList;
 		for(int i = 0; i < n; i ++)
 			adj[i] = new int[n];
 		for(int i = 0; i < m; ++i){
 			int a, b, w;
 			scanf("%d %d %d", &a, &b, &w);
 			adj[a][b] = w;
-			edgeList.push_back({a, b, w});
 		}
 
 			
@@ -88,24 +86,13 @@ int main(){
 			distance[i] = new int[n];
 		floyd_warshall(n, adj, distance, origin, target);
 
-		//Keep track of whether graph has a negative cycle
-		bool negativeCycle = false;
-		for (int i = 0; i < n; ++i)
-			//If distance to self from a path,
-			//by definition a negative cycle exists
-			if(distance[i][i] < 0) 
-				negativeCycle = true;
-
 		for(int i = 0; i < numQueries; ++i){
 			scanf("%d %d", &origin, &target );
 			
 			pathDist = distance[origin][target];
 
-			if(negativeCycle){
-				if (bellman_ford( edgeList, n, origin, target ) == -1)
-					printf("-Infinity\n");
-
-			}
+			if((distance[origin][origin] < 0) or (distance[target][target] < 0))
+				printf("-Infinity\n");
 			else if(pathDist == INF)
 				printf("Impossible\n");
 			else
