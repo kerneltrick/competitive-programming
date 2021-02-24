@@ -2,6 +2,7 @@
 #include <math.h>
 #include <climits>
 #include <tuple>
+#include <utility>
 #include <vector>
 #define INF 100000000 
 typedef std::pair<int, int> triplet;
@@ -68,12 +69,14 @@ int main(){
 	while((n + m + numQueries) != 0){
 
 		int *adj [n];
+		std::vector<triplet> edgeList;
 		for(int i = 0; i < n; i ++)
 			adj[i] = new int[n];
 		for(int i = 0; i < m; ++i){
 			int a, b, w;
 			scanf("%d %d %d", &a, &b, &w);
 			adj[a][b] = w;
+			edgeList.push_back({a, b, w});
 		}
 
 			
@@ -85,9 +88,12 @@ int main(){
 			distance[i] = new int[n];
 		floyd_warshall(n, adj, distance, origin, target);
 
+		//Keep track of whether graph has a negative cycle
 		bool negativeCycle = false;
 		for (int i = 0; i < n; ++i)
-			if(distance[i][i] < 0)
+			//If distance to self from a path,
+			//by definition a negative cycle exists
+			if(distance[i][i] < 0) 
 				negativeCycle = true;
 
 		for(int i = 0; i < numQueries; ++i){
@@ -95,13 +101,15 @@ int main(){
 			
 			pathDist = distance[origin][target];
 
-			if(negativeCycle)
-				printf("-Infinity\n");
+			if(negativeCycle){
+				if (bellman_ford( edgeList, n, origin, target ) == -1)
+					printf("-Infinity\n");
+
+			}
 			else if(pathDist == INF)
 				printf("Impossible\n");
 			else
 				printf("%d\n", pathDist);
-			
 		}	
 		printf("\n");
 		scanf("%d %d %d", &n, &m, &numQueries);
