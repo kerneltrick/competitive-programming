@@ -5,31 +5,7 @@
 #include <utility>
 #include <vector>
 #define INF 100000000 
-typedef std::tuple<int, int, int> triplet;
-typedef std::pair<int, int> PI;
 
-int bellman_ford(std::vector<triplet> edgeList, int n, int origin, int target){
-	int distance[n]; 
-	for (int i = 0; i < n; ++i)
-		distance[i] = INF;
-	distance[origin] = 0;
-
-	for(int i = 0; i < n-1; ++i){
-		for (auto e: edgeList){
-			int a, b, w;
-			std::tie(a, b, w) = e;				
-			distance[b] = std::min(distance[b], distance[a] + w);					 	           			}   
-	}
-			    
-	for (auto e: edgeList){
-		int a, b, w;
-		std::tie(a,b,w) = e;
-		if(distance[b] > (distance[a] + w ))
-			return -1;
-	}
-		return distance[target];
-		
-}
 
 void floyd_warshall(int n, int **adj, int **distance, int origin, int target){
 
@@ -86,12 +62,21 @@ int main(){
 			distance[i] = new int[n];
 		floyd_warshall(n, adj, distance, origin, target);
 
+		for(int i = 0; i < n; ++i){
+			for(int j=0; j < n; ++j){
+				for(int k=0; distance[i][j] != -INF && k<n; ++k){
+					if(distance[k][k] < 0 && distance[i][k] != INF && distance[k][j] != INF)
+						distance[i][j] = -INF;
+				}
+			}
+		}
+
 		for(int i = 0; i < numQueries; ++i){
 			scanf("%d %d", &origin, &target );
 			
 			pathDist = distance[origin][target];
 
-			if((distance[origin][origin] < 0) or (distance[target][target] < 0))
+			if(pathDist == -INF )
 				printf("-Infinity\n");
 			else if(pathDist == INF)
 				printf("Impossible\n");
