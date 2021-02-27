@@ -7,27 +7,16 @@
 #define INF 100000000 
 
 
-void floyd_warshall(int n, int **adj, int **distance, int origin, int target){
-
-	for (int i = 0; i < n ; ++i)
-	{
-		for (int j=0; j < n; ++j){
-			if(i == j)
-				distance[i][j] = 0;
-			else if (adj[i][j])
-				distance[i][j] = adj[i][j];
-			else
-				distance[i][j] = INF;
-		}
-	}	
+void floyd_warshall(int n, int **distance){
 
 	for (int k = 0; k < n; ++k){
 
 		for(int i = 0; i < n; ++i){
 
 			for(int j = 0; j < n; ++j){
-				distance[i][j] = std::min(distance[i][j], (distance[i][k]  + distance[k][j]));
-
+				//distance[i][j] = std::min(distance[i][j], (distance[i][k]  + distance[k][j]));
+				if(distance[i][j] > distance[i][k] + distance[k][j]  && distance[i][k] < INF && distance[k][j] < INF)
+					distance[i][j] = distance[i][k] + distance[k][j];
 			}
 			//printf("%d " , distance[k][i]);	
 		}
@@ -44,24 +33,23 @@ int main(){
 	scanf("%d %d %d", &n, &m, &numQueries);
 	while((n + m + numQueries) != 0){
 
-		int *adj [n];
-		for(int i = 0; i < n; i ++)
-			adj[i] = new int[n];
+
+		int *distance [n] ; 
+		for(int i = 0; i < n; ++i){
+			distance[i] = new int[n];
+			for(int j = 0; j < n; ++j)
+				distance[i][j] = (i == j?0:INF);
+		}
 		for(int i = 0; i < m; ++i){
 			int a, b, w;
 			scanf("%d %d %d", &a, &b, &w);
-			adj[a][b] = w;
+			distance[a][b] = std::min(w, distance[a][b]); 
 		}
+		
+		floyd_warshall(n, distance);
 
-			
-		int origin=0;
-		int target=0;
-		int pathDist=0;
-		int *distance [n] ; 
-		for(int i = 0; i < n; ++i)
-			distance[i] = new int[n];
-		floyd_warshall(n, adj, distance, origin, target);
 
+		//detect negative cycles
 		for(int i = 0; i < n; ++i){
 			for(int j=0; j < n; ++j){
 				for(int k=0; distance[i][j] != -INF && k<n; ++k){
@@ -70,7 +58,9 @@ int main(){
 				}
 			}
 		}
-
+		int origin=0;
+		int target=0;
+		int pathDist=0;
 		for(int i = 0; i < numQueries; ++i){
 			scanf("%d %d", &origin, &target );
 			
@@ -84,6 +74,7 @@ int main(){
 				printf("%d\n", pathDist);
 		}	
 		printf("\n");
+
 		scanf("%d %d %d", &n, &m, &numQueries);
 	}
 	return 0;
