@@ -26,7 +26,7 @@ for c in octalForm[::-1]:
 
 while len(binaryForm)%4 != 0:
     binaryForm = "0"+binaryForm
-if binaryForm != "":
+if len(binaryForm) > 0 and (int(binaryForm) != 0 or len(hexForm) == 0):
     hexForm = binaryToHex[binaryForm] + hexForm
 
 print(hexForm)
