@@ -2,9 +2,9 @@ import io
 import math
 
 octalToBinary = {"0":"000", "1":"001",\
-                 "2":"010", "3":"011",\
-                 "4":"100", "5":"101",\
-                 "6":"110", "7":"111" }
+              "2":"010", "3":"011",\
+              "4":"100", "5":"101",\
+              "6":"110", "7":"111" }
 
 binaryToHex = {"0000":"0", "0001":"1",\
                "0010":"2", "0011":"3",\
@@ -16,17 +16,18 @@ binaryToHex = {"0000":"0", "0001":"1",\
                "1110":"E", "1111":"F" }
 
 octalForm = input()
-
 binaryForm = ""
-for c in octalForm:
-    binaryForm += octalToBinary[c] 
+hexForm = ""
+for c in octalForm[::-1]:
+    binaryForm = octalToBinary[c] + binaryForm
+    if(len(binaryForm) >= 4):
+        hexForm = binaryToHex[binaryForm[-4:]] + hexForm
+        binaryForm = binaryForm[:-4]
 
 while len(binaryForm)%4 != 0:
     binaryForm = "0"+binaryForm
-
-hexForm = ""
-for i in range(len(binaryForm)//4):
-    hexForm += binaryToHex[binaryForm[(i*4):((i+1)*4)]] 
+if binaryForm != "":
+    hexForm = binaryToHex[binaryForm] + hexForm
 
 print(hexForm)
 
