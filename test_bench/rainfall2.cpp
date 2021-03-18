@@ -1,7 +1,17 @@
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 
 using namespace std;
+
+double quadratic_equation(double a, double b, double c){
+
+	double numerator = (-1*b) + sqrt( (b*b) - (4*a*c) );
+	double denominator = (2*a);
+	double root = numerator/denominator;
+
+	return root;
+}
 
 int main(){
 	
@@ -14,8 +24,9 @@ int main(){
 	}else{
 		f1 = h;
 		double max = h + (t2*k);
-		double r = (max/t1) + ((1-(l/max))*k);
+		double r = quadratic_equation(t1, (-1*(max + (k*t1))), (k*l)) ;
 		f2 = t1 * r;
+
 	}
 
 	printf("%.6f %.6f\n", f1, f2);
