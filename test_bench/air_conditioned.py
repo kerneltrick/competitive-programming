@@ -2,20 +2,12 @@ numMinions = int(input())
 
 minionTempRanges = {} 
 tempCounts = {}
-minTemp = None
-maxTemp = None
 
 for i in range(numMinions):
 
     tempRange = tuple([int(x) for x in input().split(" ")])
     L, U = tempRange
     minionTempRanges[i] = tempRange
-
-    if minTemp is None or L < minTemp:
-        minTemp = L
-
-    if maxTemp is None or U < maxTemp:
-        maxTemp = U
 
     for j in range(L, U+1):
 
@@ -33,6 +25,10 @@ while numMinions > 0:
     tempCountsPriority = [key for key, value in sorted(tempCounts.items(), key = lambda x:x[1], reverse=True)]
     room = tempCountsPriority[0]
 
+    print(tempCounts)
+    print(minionTempRanges)
+    print(room)
+
     for i, tempRange in minionTempRanges.items():
 
         if tempRange is None:
@@ -46,4 +42,5 @@ while numMinions > 0:
                 tempCounts[j] -= 1
             numMinions -= 1
 
+print(tempCounts)
 print(numRooms)
