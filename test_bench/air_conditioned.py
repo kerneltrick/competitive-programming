@@ -1,6 +1,7 @@
 numMinions = int(input())
 
-minionTemps = {} 
+minionTempRanges = {} 
+tempCounts = {}
 minTemp = None
 maxTemp = None
 
@@ -8,7 +9,7 @@ for i in range(numMinions):
 
     tempRange = tuple([int(x) for x in input().split(" ")])
     L, U = tempRange
-    minionTemps[i] = tempRange
+    minionTempRanges[i] = tempRange
 
     if minTemp is None or L < minTemp:
         minTemp = L
@@ -16,21 +17,33 @@ for i in range(numMinions):
     if maxTemp is None or U < maxTemp:
         maxTemp = U
 
-for temp in range(len(minionTemps)):
+    for j in range(L, U+1):
 
-    for i in range(numMinions):
+        if j not in tempCounts:
+            tempCounts[j] = 1
+        else:
+            tempCounts[j] += 1
 
-        if minionTemps[i] is not None:
-            L, U = minionTemps[i]
-            if L <= temp and U >= temp:
-                minionTemps[i] = None
+numRooms = 0
 
+while numMinions > 0:
 
-        
+    numRooms += 1
 
+    tempCountsPriority = [key for key, value in sorted(tempCounts.items(), key = lambda x:x[1], reverse=True)]
+    room = tempCountsPriority[0]
 
+    for i, tempRange in minionTempRanges.items():
 
+        if tempRange is None:
+            continue
 
+        L, U = tempRange
 
+        if room >= L and room <= U:
+            minionTempRanges[i] = None
+            for j in range(L, U+1):
+                tempCounts[j] -= 1
+            numMinions -= 1
 
-
+print(numRooms)
