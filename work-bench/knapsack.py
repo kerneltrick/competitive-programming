@@ -13,29 +13,49 @@ def solve(values, weights, C):
     
     n = len(weights)
     # what is the max value we can obtain from the first j items
-    solutions = [[0 for j in range(n+1)] for i in range(C+1)]
-    indicesUsed = [[[] for j in range(n+1)] for i in range(C+1)]
+    #solutions = [[0 for j in range(n+1)] for i in range(C+1)]
+    #indicesUsed = [[[] for j in range(n+1)] for i in range(C+1)]
+    solutions = {0:{}}
+    for j in range(n):
+        solutions[0][j] = 0
+    indicesUsed = {} 
     
-
     maxVal = 0
     maxIndices = []
 
     for k in range(1, n+1):
-        for x in range(1, C+1):
-            if x - weights[k-1] >= 0:
-                option1 = solutions[x-weights[k-1]][k-1] + values[k-1]
-                option2 = solutions[x][k-1]
-                solutions[x][k] = max(option1, option2)
+        for w in range(1, C+1):
+            if w not in solutions:
+                solutions[w] = {}
+            if w - weights[k-1] >= 0:
+                if w - weights[k-1] not in solutions:
+                    solutions[w-weights[k-1]] = {}
+                if k-1 not in solutions[w-weights[k-1]]:
+                    solutions[w-weights[k-1]][k-1] = 0 
+                if k-1 not in solutions[w]:
+                    solutions[w][k-1] = 0 
+
+                option1 = solutions[w-weights[k-1]][k-1] + values[k-1]
+                option2 = solutions[w][k-1]
+                solutions[w][k] = max(option1, option2)
+
+                if w not in indicesUsed: 
+                    indicesUsed[w] = {} 
+
                 if option1 > option2:
-                    indicesUsed[x][k] = indicesUsed[x-weights[k-1]][k-1] + [k-1]
+                    if w-weights[k-1] not in indicesUsed:
+                        indicesUsed[w-weights[k-1]] = {} 
+                    if k-1 not in indicesUsed[w-weights[k-1]]:
+                            indicesUsed[w-weights[k-1]][k-1] = []
+                    indicesUsed[w][k] = indicesUsed[w-weights[k-1]][k-1] + [k-1]
                 else:
-                    indicesUsed[x][k] = indicesUsed[x][k-1] + [k-1]
+                    indicesUsed[w][k] = indicesUsed[w][k-1]
 
-                if solutions[x][k] > maxVal:
-                    maxVal = solutions[x][k]
-                    maxIndices = indicesUsed[x][k]
+                if solutions[w][k] > maxVal:
+                    maxVal = solutions[w][k]
+                    maxIndices = indicesUsed[w][k]
 
-    return indicesUsed[x][k]
+    return maxIndices
 
 while True:
 
@@ -65,9 +85,3 @@ while True:
         indices += str(i) + " " 
 
     print(indices)
-
-
-        
-
-    
-
